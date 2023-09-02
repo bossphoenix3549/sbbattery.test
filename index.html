@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Battery Warranty Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #3e3e3e;
+            color: white;
+            text-align: center;
+        }
+        h1 {
+            color: #ff5c5c;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Battery Warranty Checker</h1>
+        <label for="brand">Select Battery Brand:</label>
+        <select id="brand">
+            <option value="Exide">Exide</option>
+            <option value="Amaron">Amaron</option>
+            <option value="SF Batteries">SF Batteries</option>
+            <!-- Add more options as needed -->
+        </select>
+        <br><br>
+        <label for="purchaseDate">Date of Purchase:</label>
+        <input type="date" id="purchaseDate">
+        <br><br>
+        <label for="warranty">Select Warranty Slot:</label>
+        <select id="warranty">
+            <option value="12">12 months</option>
+            <option value="18">18 months</option>
+            <option value="24">24 months</option>
+            <option value="36">36 months</option>
+            <option value="48">48 months</option>
+            <option value="60">50+ months</option>
+        </select>
+        <br><br>
+        <button onclick="calculateWarranty()">Check Warranty</button>
+        <br><br>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function calculateWarranty() {
+            const brand = document.getElementById("brand").value;
+            const purchaseDate = new Date(document.getElementById("purchaseDate").value);
+            const warrantyMonths = parseInt(document.getElementById("warranty").value);
+
+            const currentDate = new Date();
+            const expiryDate = new Date(purchaseDate);
+            expiryDate.setMonth(purchaseDate.getMonth() + warrantyMonths);
+
+            const daysLeft = Math.floor((expiryDate - currentDate) / (1000 * 60 * 60 * 24));
+            const monthsLeft = Math.floor(daysLeft / 30);
+
+            const result = `Battery Brand: ${brand}<br>Warranty Expires in: ${monthsLeft} months and ${daysLeft % 30} days`;
+
+            document.getElementById("result").innerHTML = result;
+        }
+    </script>
+</body>
+</html>
