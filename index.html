@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Battery Warranty Checker</title>
     <style>
         body {
@@ -14,11 +15,55 @@
             color: #ff5c5c;
         }
         .container {
-            max-width: 400px;
+            max-width: 90%;
             margin: 0 auto;
             padding: 20px;
             background-color: #333;
             border-radius: 10px;
+        }
+        label, select, input, button {
+            display: block;
+            margin: 10px auto;
+            width: 90%;
+            padding: 10px;
+            background-color: #555;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            text-align: center; /* Center-align text */
+        }
+        button {
+            background-color: #ff5c5c;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1;
+        }
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #333;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .modal img {
+            max-width: 500px;
+            max-height: 500px;
         }
     </style>
 </head>
@@ -30,12 +75,17 @@
             <option value="Exide">Exide</option>
             <option value="Amaron">Amaron</option>
             <option value="SF Batteries">SF Batteries</option>
-            <!-- Add more options as needed -->
+            <option value="Autobat">Autobat</option>
+            <option value="Supreme">Supreme</option>
+            <option value="Enertex">Enertex</option>
+            <option value="Suhito">Suhito</option>
+            <option value="Boss">Boss</option>
+            <option value="Dynex">Dynex</option>
+            <option value="Tata Green">Tata Green</option>
+            <option value="Other">Other</option>
         </select>
-        <br><br>
         <label for="purchaseDate">Date of Purchase:</label>
-        <input type="date" id="purchaseDate">
-        <br><br>
+        <input type="date" id="purchaseDate" value="2018-01-01">
         <label for="warranty">Select Warranty Slot:</label>
         <select id="warranty">
             <option value="12">12 months</option>
@@ -45,10 +95,17 @@
             <option value="48">48 months</option>
             <option value="60">50+ months</option>
         </select>
-        <br><br>
-        <button onclick="calculateWarranty()">Check Warranty</button>
-        <br><br>
+        <button onclick="openModal()">Check Warranty</button>
         <div id="result"></div>
+    </div>
+
+    <div class="modal" id="warrantyModal">
+        <div class="modal-content">
+            <h2>Warranty Information</h2>
+            <p id="warrantyInfo"></p>
+            <img src="placeholder.jpg" alt="Company Logo" width="500" height="500">
+            <button onclick="closeModal()">Close</button>
+        </div>
     </div>
 
     <script>
@@ -61,12 +118,28 @@
             const expiryDate = new Date(purchaseDate);
             expiryDate.setMonth(purchaseDate.getMonth() + warrantyMonths);
 
-            const daysLeft = Math.floor((expiryDate - currentDate) / (1000 * 60 * 60 * 24));
-            const monthsLeft = Math.floor(daysLeft / 30);
+            if (expiryDate < currentDate) {
+                const expiredMessage = "Warranty already expired. Please visit the store for purchasing a new one.";
+                document.getElementById("result").innerHTML = expiredMessage;
+            } else {
+                const daysLeft = Math.floor((expiryDate - currentDate) / (1000 * 60 * 60 * 24));
+                const monthsLeft = Math.floor(daysLeft / 30);
+                const result = `Battery Brand: ${brand}<br>Warranty Expires in: ${monthsLeft} months and ${daysLeft % 30} days`;
+                document.getElementById("result").innerHTML = result;
+            }
+        }
 
-            const result = `Battery Brand: ${brand}<br>Warranty Expires in: ${monthsLeft} months and ${daysLeft % 30} days`;
+        function openModal() {
+            calculateWarranty();
+            const warrantyInfo = document.getElementById("result").innerHTML;
+            document.getElementById("warrantyInfo").innerHTML = warrantyInfo;
+            const modal = document.getElementById("warrantyModal");
+            modal.style.display = "block";
+        }
 
-            document.getElementById("result").innerHTML = result;
+        function closeModal() {
+            const modal = document.getElementById("warrantyModal");
+            modal.style.display = "none";
         }
     </script>
 </body>
